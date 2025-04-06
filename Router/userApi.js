@@ -6,7 +6,7 @@ const sendEmail = require("../utils/sendEmail");
 
 const User = require('../model/userSchema');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 router.post('/register', async (req, res) => {
     try {
