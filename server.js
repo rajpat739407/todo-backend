@@ -3,8 +3,13 @@ const app = express();
 // ✅ Proper CORS Setup
 const cors = require('cors');
 
+const allowedOrigins = [
+  'http://localhost:3000', // local
+  'https://todo-frontend-fvhgqkthq-marajpatel123s-projects.vercel.app', // your deployed frontend
+];
+
 app.use(cors({
-  origin: ["https://todo-frontend-ten-orcin.vercel.app"],
+  origin: allowedOrigins,
   credentials: true,
 }));
 
