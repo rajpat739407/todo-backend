@@ -11,12 +11,13 @@ const sendEmail = async (email, subject, text) => {
         },
       });;
 
-    await transporter.sendMail({
-      from: "your-email@gmail.com",
-      to: email,
-      subject,
-      text,
-    });
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER, // ✅ safer than hardcoding
+        to: email,
+        subject,
+        text,
+      });
+      
 
     console.log("Email sent successfully");
   } catch (error) {

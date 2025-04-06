@@ -3,16 +3,11 @@ const app = express();
 // ✅ Proper CORS Setup
 const cors = require('cors');
 
-app.use(
-  cors({
-    origin: ["https://todo-frontend-ten-orcin.vercel.app"], // your frontend URL
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors({
+  origin: ["https://todo-frontend-ten-orcin.vercel.app"],
+  credentials: true,
+}));
 
-app.options("*", cors()); // Handle preflight requests
 
 
 app.use(express.json());
