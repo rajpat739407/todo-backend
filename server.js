@@ -1,12 +1,10 @@
 const express = require('express');
 const app = express();
-// ✅ Proper CORS Setup
 const cors = require('cors');
 
 const allowedOrigins = [
-  'http://localhost:3000', // local
-  'https://todo-frontend-marajpatel123s-projects.vercel.app/login',
-   // your deployed frontend
+  'http://localhost:3000',
+  'https://todo-frontend-marajpatel123s-projects.vercel.app',
 ];
 
 app.use(cors({
@@ -14,11 +12,8 @@ app.use(cors({
   credentials: true,
 }));
 
-
-
 app.use(express.json());
 
-// Routes and DB connection
 require('./model/taskSchema.js');
 require('./model/userSchema.js');
 const TaskRouter = require('./Router/taskApi.js');
