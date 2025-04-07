@@ -5,7 +5,8 @@ const cors = require('cors');
 
 const allowedOrigins = [
   'http://localhost:3000', // local
-  'https://todo-frontend-fvhgqkthq-marajpatel123s-projects.vercel.app', // your deployed frontend
+  'https://todo-frontend-marajpatel123s-projects.vercel.app/login',
+   // your deployed frontend
 ];
 
 app.use(cors({
