@@ -2,11 +2,12 @@ const mongoose = require('mongoose');
 const express = require('express');
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
-
-
-const User = require('../model/userSchema');
+const User = require("../model/userSchema");
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+
+
+
 
 router.post('/register', async (req, res) => {
     try {
@@ -126,34 +127,35 @@ router.put('/users/:id', async (req, res) => {
 
 
 router.post("/forgot-password", async (req, res) => {
-    const { email } = req.body;
-  
-    try {
-      const user = await User.findOne({ email });
-      if (!user) return res.status(404).json({ message: "User not found" });
-  
-      const token = crypto.randomBytes(32).toString("hex");
-      user.resetToken = token;
-      user.resetTokenExpiration = Date.now() + 3600000; // 1 hour
-      await user.save();
-  
-    //   const resetLink = `http://localhost:3000/reset-password/${token}`;
+  const { email } = req.body;
+
+  try {
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    const user = await User.findOne({ email });
+    if (!user)
+      return res.status(404).json({ message: "User with that email not found" });
+
+    const token = crypto.randomBytes(32).toString("hex");
+    user.resetToken = token;
+    user.resetTokenExpiration = Date.now() + 3600000; // 1 hour
+    await user.save();
+
     const resetLink = `https://todo-frontend-ten-orcin.vercel.app/reset-password/${token}`;
 
-  
-      await sendEmail(
-        email,
-        "Password Reset",
-        `You requested a password reset. Click the link to reset: ${resetLink}`
-      );
-  
-      res.status(200).json({ message: "Reset email sent" });
-    } catch (error) {
-      console.error("Error in forgot-password:", error);
-      res.status(500).json({ message: "Error sending reset link" });
-    }
-  });
-  
+    await sendEmail(
+      email,
+      "Password Reset",
+      `You requested a password reset. Click the link to reset your password: ${resetLink}`
+    );
+
+    res.status(200).json({ message: "Reset email sent" });
+  } catch (error) {
+    console.error("Error in forgot-password:", error);
+    res.status(500).json({ message: "Error sending reset link" });
+  }
+});
+
 
   router.post("/reset-password/:token", async (req, res) => {
     const { token } = req.params;
