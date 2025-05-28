@@ -8,8 +8,9 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
+  origin: "https://todo-frontend-ten-orcin.vercel.app", // Your frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true, // Allow cookies/sessions
 }));
 
 app.use(express.json());
