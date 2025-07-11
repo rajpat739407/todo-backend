@@ -158,33 +158,55 @@ router.post("/forgot-password", async (req, res) => {
 
 
   router.post("/reset-password/:token", async (req, res) => {
-    const { token } = req.params;
-    const { password, confirmPassword } = req.body;
-  
-    try {
-      const user = await User.findOne({
-        resetToken: token,
-        resetTokenExpiration: { $gt: Date.now() },
-      });
-  
-      if (!user) return res.status(400).json({ message: "Invalid or expired token" });
-  
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const hashedConfirm = await bcrypt.hash(confirmPassword, 10);
-  
-      user.password = hashedPassword;
-      user.confirmPassword = hashedConfirm;
-      user.resetToken = undefined;
-      user.resetTokenExpiration = undefined;
-  
-      await user.save();
-  
-      res.status(200).json({ message: "Password reset successful" });
-    } catch (error) {
-      console.error("Error resetting password:", error);
-      res.status(500).json({ message: "Error resetting password" });
+  const { token } = req.params;
+  const { password, confirmPassword } = req.body;
+
+  try {
+    // Validate inputs
+    if (!password || !confirmPassword) {
+      return res.status(400).json({ message: "Password and confirmation are required" });
     }
-  });
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // Find user with valid token
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiration: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    // Hash new passwords
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedConfirm = await bcrypt.hash(confirmPassword, 10);
+
+    // Update user
+    user.password = hashedPassword;
+    user.confirmPassword = hashedConfirm;
+    user.resetToken = undefined;
+    user.resetTokenExpiration = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (error) {
+    console.error("Detailed password reset error:", {
+      message: error.message,
+      stack: error.stack,
+      requestBody: req.body
+    });
+    
+    res.status(500).json({ 
+      message: "Error resetting password",
+      error: error.message 
+    });
+  }
+});
   
 
 
