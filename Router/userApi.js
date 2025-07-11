@@ -8,7 +8,6 @@ const bcrypt = require('bcryptjs');
 
 
 
-
 router.post('/register', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -133,26 +132,35 @@ router.post("/forgot-password", async (req, res) => {
     if (!email) return res.status(400).json({ message: "Email is required" });
 
     const user = await User.findOne({ email });
-    if (!user)
+    if (!user) {
+      console.log("User not found for email:", email);
       return res.status(404).json({ message: "User with that email not found" });
+    }
 
     const token = crypto.randomBytes(32).toString("hex");
     user.resetToken = token;
     user.resetTokenExpiration = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    const resetLink = `https://todo-frontend-ten-orcin.vercel.app/reset-password/${token}`;
+    const resetLink = `https://todo-frontend-vz1h.onrender.com/reset-password/${token}`;
+    const emailText = `You requested a password reset. Click the link to reset your password:\n\n${resetLink}\n\nThis link will expire in 1 hour.`;
 
+    console.log("Attempting to send reset email to:", email);
+    
     await sendEmail(
       email,
-      "Password Reset",
-      `You requested a password reset. Click the link to reset your password: ${resetLink}`
+      "Password Reset Request",
+      emailText
     );
 
-    res.status(200).json({ message: "Reset email sent" });
+    console.log("Reset email sent successfully to:", email);
+    res.status(200).json({ message: "Reset email sent successfully" });
   } catch (error) {
     console.error("Error in forgot-password:", error);
-    res.status(500).json({ message: "Error sending reset link" });
+    res.status(500).json({ 
+      message: "Error sending reset link",
+      error: error.message 
+    });
   }
 });
 
