@@ -141,7 +141,7 @@ router.post("/forgot-password", async (req, res) => {
     user.resetTokenExpiration = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    const resetLink = `https://todo-frontend-ten-orcin.vercel.app/reset-password/${token}`;
+    const resetLink = `https://todo-frontend-vz1h.onrender.com/reset-password/${token}`;
 
     await sendEmail(
       email,
