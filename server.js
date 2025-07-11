@@ -4,11 +4,11 @@ const cors = require('cors');
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://todo-frontend-marajpatel123s-projects.vercel.app',
+  'https://todo-frontend-vz1h.onrender.com',
 ];
 
 app.use(cors({
-  origin: "https://todo-frontend-ten-orcin.vercel.app", // Your frontend URL
+  origin: "https://todo-frontend-vz1h.onrender.com", // Your frontend URL
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true, // Allow cookies/sessions
 }));
