@@ -18,9 +18,8 @@ const sendEmail = async (to, subject, text) => {
     });
   } catch (err) {
     console.error("Email sending failed:", err);
-    throw new Error("Email service error");
+    throw err; // bubble up so router can respond with 500
   }
 };
-
 
 module.exports = sendEmail;
